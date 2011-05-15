@@ -6,6 +6,8 @@ requires = [
     'setuptools',
     'lxml',
     'unittest2',
+    'zope.interface',
+    'zope.schema',
 ]
 
 setup(name='corejet.core',

@@ -3,71 +3,68 @@
 
 import types
 
-class scenario(object):
-    """Defines a reference to a scenario with a title, used as a class
-    decorator
-    """
-    
-    def __init__(self, title):
-        self.title = title
-    
-    def __call__(self, cls):
-        cls.corejet_title = self.title
-        cls.corejet_steps = steps = {}
-        
-        for name, func in cls.__dict__.items():
-            if isinstance(func, types.FunctionType):
-                step_type = getattr(func, 'corejet_step_type', None)
-                step = getattr(func, 'corejet_step', None)
-                if step_type is not None and step is not None:
-                    steps.setdefault(step_type, []).append(func)
-        
-        return cls
+from zope.interface import alsoProvides
+from corejet.core.interfaces import IStep, IScenario, IStory
 
-class story(scenario):
+def iter_step_types(cls):
+    for name, func in cls.__dict__.items():
+        if isinstance(func, types.FunctionType):
+            step_type = getattr(func, 'step_type', None)
+            step = getattr(func, 'text', None)
+            if step_type is not None and step is not None:
+                if step_type in ('given', 'when', 'then',):
+                    yield step_type, func
+                else:
+                    raise ValueError("Unkown step type %s" % step_type)
+
+class story(object):
     """Defines a reference to a story with an id and title, used as a class
-    decorator
+    decorator. The class object will become a valid IStory, with all relevant
+    properties set.
     """
     
     def __init__(self, id, title):
-        super(story, self).__init__(title)
         self.id = id
+        self.title = title
     
     def __call__(self, cls):
-        cls.corejet_id = self.id
-        cls.corejet_scenarios = []
+        cls.name = self.id
+        cls.title = self.title
+        cls.scenarios = []
         
-        super(story, self).__call__(cls)
+        cls.points = None
+        cls.status = None
+        cls.resolution = None
+        cls.priority = None
+        cls.epic = None
         
         # Go through each scenario and turn it into a test_* method
         
-        shared_steps = cls.corejet_steps
+        global_givens = []
+        global_whens = []
+        global_thens = []
+        
+        for step_type, func in iter_step_types(cls):
+            if step_type == 'given':
+                global_givens.append(func)
+            elif step_type == 'when':
+                global_whens.append(func)
+            elif step_type == 'then':
+                global_thens.append(func)
         
         for name, scenario in cls.__dict__.items():
-            steps = getattr(scenario, 'corejet_steps', None)
-            if steps is not None:
+            if IScenario.providedBy(scenario):
                 
-                test_given = []
-                test_when  = []
-                test_then  = []
+                # Prepend all global steps to the scenario steps
                 
-                # Copy all shared steps as the first in the lists
+                for func in reversed(global_givens):
+                    scenario.givens.insert(0, func)
+                for func in reversed(global_whens):
+                    scenario.whens.insert(0, func)
+                for func in reversed(global_thens):
+                    scenario.thens.insert(0, func)
                 
-                for func in shared_steps.get('given', []):
-                    test_given.append(func)
-                for func in shared_steps.get('when', []):
-                    test_when.append(func)
-                for func in shared_steps.get('then', []):
-                    test_then.append(func)
-                
-                # Then all scenario-specific steps
-                
-                for func in steps.get('given', []):
-                    test_given.append(func)
-                for func in steps.get('when', []):
-                    test_when.append(func)
-                for func in steps.get('then', []):
-                    test_then.append(func)
+                scenario.story = cls
                 
                 def closure(self):
                     
@@ -84,26 +81,55 @@ class story(scenario):
                     # the *story* class, not the scenario class, which is
                     # really just a grouping mechanism and not used directly.
                     
-                    for func in fn.given:
+                    for func in fn.scenario.givens:
                         func(self)
-                    for func in fn.when:
+                    for func in fn.scenario.whens:
                         func(self)
-                    for func in fn.then:
+                    for func in fn.scenario.thens:
                         func(self)
                 
                 closure.func_name = 'test_%s' % name
                 closure.__module__ = cls.__module__
                 
-                closure.scenario = scenario.corejet_title
-                
-                closure.given = test_given
-                closure.when  = test_when
-                closure.then  = test_then
+                closure.scenario = scenario
                 
                 setattr(cls, 'test_%s' % name, closure)
                 
-                cls.corejet_scenarios.append(closure)
-                
+                cls.scenarios.append(scenario)
+        
+        alsoProvides(cls, IStory)
+        
+        return cls
+
+class scenario(object):
+    """Defines a reference to a scenario with a title, used as a class
+    decorator. The class object will become a valid IScenario, with all
+    relevant properties set.
+    """
+    
+    def __init__(self, title):
+        self.title = title
+    
+    def __call__(self, cls):
+        cls.name = self.title
+        
+        cls.givens = []
+        cls.whens = []
+        cls.thens = []
+        
+        cls.status = None
+        cls.story = None
+        
+        for step_type, func in iter_step_types(cls):
+            if step_type == 'given':
+                cls.givens.append(func)
+            elif step_type == 'when':
+                cls.whens.append(func)
+            elif step_type == 'then':
+                cls.thens.append(func)
+        
+        alsoProvides(cls, IScenario)
+        
         return cls
 
 class _step(object):
@@ -114,27 +140,33 @@ class _step(object):
         self.step = step
     
     def __call__(self, method):
-        method.corejet_step_type = self.step_type
-        method.corejet_step = self.step
+        method.step_type = self.step_type
+        method.text = self.step
+        
+        alsoProvides(method, IStep)
+        
         return method
 
 class given(_step):
     """Defines a reference to a 'given' step with step text, used as a method
-    decorator
+    decorator. The function object will become a valid IStep, with all
+    relevant properties set.
     """
     
     step_type = "given"
 
 class when(_step):
     """Defines a reference to a 'given' step with step text, used as a method
-    decorator
+    decorator. The function object will become a valid IStep, with all
+    relevant properties set.
     """
     
     step_type = "when"
 
 class then(_step):
     """Defines a reference to a 'given' step with step text, used as a method
-    decorator
+    decorator. The function object will become a valid IStep, with all
+    relevant properties set.
     """
     
     step_type = "then"
