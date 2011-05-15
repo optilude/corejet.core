@@ -5,3 +5,5 @@ from corejet.core.decorators import (
         when,
         then
     )
+
+from corejet.core.testcase import Scenario

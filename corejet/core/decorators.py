@@ -55,14 +55,15 @@ class story(object):
         for name, scenario in cls.__dict__.items():
             if IScenario.providedBy(scenario):
                 
-                # Prepend all global steps to the scenario steps
-                
+                # Prepend global given/when steps to the scenario steps
                 for func in reversed(global_givens):
                     scenario.givens.insert(0, func)
                 for func in reversed(global_whens):
                     scenario.whens.insert(0, func)
-                for func in reversed(global_thens):
-                    scenario.thens.insert(0, func)
+                
+                # Append global then steps to the scenario steps
+                for func in global_thens:
+                    scenario.thens.append(func)
                 
                 scenario.story = cls
                 
@@ -77,16 +78,27 @@ class story(object):
 
                     fn = getattr(self, self._testMethodName)
                     
+                    # Create an instance of the scenario as the 'self'
+                    # argument to the function, and set the 'story'
+                    # attribute
+                    
+                    story = self
+                    try:
+                        scenario = fn.scenario(story)
+                    except TypeError:
+                        scenario = fn.scenario()
+                        scenario.story = story
+                    
                     # Call each of the step methods. Note ``self`` here is
                     # the *story* class, not the scenario class, which is
                     # really just a grouping mechanism and not used directly.
                     
                     for func in fn.scenario.givens:
-                        func(self)
+                        func(scenario)
                     for func in fn.scenario.whens:
-                        func(self)
+                        func(scenario)
                     for func in fn.scenario.thens:
-                        func(self)
+                        func(scenario)
                 
                 closure.func_name = 'test_%s' % name
                 closure.__module__ = cls.__module__

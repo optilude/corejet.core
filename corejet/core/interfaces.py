@@ -48,8 +48,8 @@ class IEpic(Interface):
     
     stories = schema.List(title=u"Stories", value_type=schema.Object(schema=IStory))
 
-class IRequirementsCatalog(Interface):
-    """A requirements catalog comprising multiple epics
+class IRequirementsCatalogue(Interface):
+    """A requirements catalogue comprising multiple epics
     """
     
     extractTime = schema.Datetime(title=u"Extract time")
@@ -62,7 +62,7 @@ class IRequirementsCatalog(Interface):
         """
     
     def serialize():
-        """Return a serialisation of this catalog as an lxml ElementTree
+        """Return a serialisation of this catalogue as an lxml ElementTree
         """
     
     def write(output):

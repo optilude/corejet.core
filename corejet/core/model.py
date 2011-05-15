@@ -6,14 +6,14 @@ import dateutil.parser
 
 from zope.interface import implements
 
-from corejet.core.interfaces import IRequirementsCatalog
+from corejet.core.interfaces import IRequirementsCatalogue
 from corejet.core.interfaces import IEpic
 from corejet.core.interfaces import IStory
 from corejet.core.interfaces import IScenario
 from corejet.core.interfaces import IStep
 
-class RequirementsCatalog(object):
-    implements(IRequirementsCatalog)
+class RequirementsCatalogue(object):
+    implements(IRequirementsCatalogue)
     
     def __init__(self,
         extractTime=None,
@@ -33,19 +33,19 @@ class RequirementsCatalog(object):
         
         tree = etree.parse(input)
         
-        catalogElement = tree.getroot()
+        catalogueElement = tree.getroot()
         
-        extractTime = catalogElement.get('extractTime')
+        extractTime = catalogueElement.get('extractTime')
         if extractTime:
             self.extractTime = dateutil.parser.parse(extractTime)
         
-        testTime = catalogElement.get('testTime')
+        testTime = catalogueElement.get('testTime')
         if testTime:
             self.testTime = dateutil.parser.parse(testTime)
         
-        self.project = catalogElement.get('project', None)
+        self.project = catalogueElement.get('project', None)
         
-        for epicElement in catalogElement.iterchildren(tag="epic"):
+        for epicElement in catalogueElement.iterchildren(tag="epic"):
             
             name = epicElement.get('id')
             title = epicElement.get('title')
@@ -53,7 +53,7 @@ class RequirementsCatalog(object):
             epic = Epic(name, title)
             self.epics.append(epic)
             
-            for storyElement in catalogElement.iterchildren(tag="story"):
+            for storyElement in epicElement.iterchildren(tag="story"):
                 
                 name = storyElement.get("id")
                 title = storyElement.get("title")
@@ -62,11 +62,17 @@ class RequirementsCatalog(object):
                 resolution = storyElement.get("requirementResolution")
                 priority = storyElement.get("priority")
                 
+                if points:
+                    try:
+                        points = int(points)
+                    except (TypeError, ValueError,):
+                        points = None
+                
                 story = Story(name, title, points=points, status=status,
                     resolution=resolution, priority=priority, epic=epic)
                 epic.stories.append(story)
                 
-                for scenarioElement in catalogElement.iterchildren(tag="scenario"):
+                for scenarioElement in storyElement.iterchildren(tag="scenario"):
                     
                     name = scenarioElement.get("name")
                     status = scenarioElement.get("testStatus")
@@ -78,24 +84,24 @@ class RequirementsCatalog(object):
                         scenario.givens.append(Step(givenElement.text, 'given'))
                     
                     for whenElement in scenarioElement.iterchildren(tag="when"):
-                        scenario.givens.append(Step(whenElement.text, 'when'))
+                        scenario.whens.append(Step(whenElement.text, 'when'))
                     
                     for thenElement in scenarioElement.iterchildren(tag="then"):
-                        scenario.givens.append(Step(thenElement.text, 'then'))
+                        scenario.thens.append(Step(thenElement.text, 'then'))
     
     def serialize(self):
         
-        catalogElement = etree.Element("requirementscatalog")
+        catalogueElement = etree.Element("requirementscatalogue")
         
         if self.project:
-            catalogElement.set("project", self.project)
+            catalogueElement.set("project", self.project)
         if self.extractTime:
-            catalogElement.set("extractTime", self.extractTime.isoformat())
+            catalogueElement.set("extractTime", self.extractTime.isoformat())
         if self.testTime:
-            catalogElement.set("testTime", self.testTime.isoformat())
+            catalogueElement.set("testTime", self.testTime.isoformat())
         
         for epic in self.epics:
-            epicElement = etree.SubElement(catalogElement, "epic")
+            epicElement = etree.SubElement(catalogueElement, "epic")
             
             epicElement.set("id", epic.name)
             epicElement.set("title", epic.title)
@@ -107,7 +113,7 @@ class RequirementsCatalog(object):
                 storyElement.set("title", story.title)
                 
                 if story.points:
-                    storyElement.set("points", str(story.point))
+                    storyElement.set("points", str(story.points))
                 if story.status:
                     storyElement.set("requirementStatus", story.status)
                 if story.resolution:
@@ -125,21 +131,21 @@ class RequirementsCatalog(object):
                     
                     for given in scenario.givens:
                         givenElement = etree.SubElement(scenarioElement, "given")
-                        givenElement.text = given
+                        givenElement.text = given.text
                     
                     for when in scenario.whens:
                         whenElement = etree.SubElement(scenarioElement, "when")
-                        whenElement.text = when
+                        whenElement.text = when.text
                     
                     for then in scenario.thens:
                         thenElement = etree.SubElement(scenarioElement, "then")
-                        thenElement.text = then
+                        thenElement.text = then.text
         
-        return etree.ElementTree(catalogElement)
+        return etree.ElementTree(catalogueElement)
         
     def write(self, output):
         tree = self.serialize()
-        tree.write(output)
+        tree.write(output, pretty_print=True)
     
 class Epic(object):
     implements(IEpic)

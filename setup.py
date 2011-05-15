@@ -5,7 +5,7 @@ version = '1.0a1'
 requires = [
     'setuptools',
     'lxml',
-    'python-dateutil',
+    'python-dateutil < 2.0dev',
     'unittest2',
     'zope.interface',
     'zope.schema',
