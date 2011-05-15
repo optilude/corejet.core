@@ -3,11 +3,11 @@ import shutil
 import tempfile
 import datetime
 import unittest2 as unittest
-import lxml
+import lxml.etree
 
 from corejet.core import Scenario, story, scenario, given, when, then
 
-@story(id="CJ-1", title="As a developer, I can serialize my tests to XML")
+@story(id="CC-1", title="As a developer, I can serialize my tests to XML")
 class XMLSerialization(unittest.TestCase):
     
     @scenario("Empty catalogue")
@@ -30,7 +30,7 @@ class XMLSerialization(unittest.TestCase):
     @scenario("Requirements extract")
     class RequirementsExtract(Scenario):
         
-        @given("An empty requirements catalogue containing user requirements")
+        @given("A requirements catalogue containing user requirements")
         def create(self):
             from corejet.core.model import RequirementsCatalogue
             from corejet.core.model import Epic, Story, Scenario, Step
@@ -97,7 +97,7 @@ class XMLSerialization(unittest.TestCase):
     @scenario("Test run extract")
     class TestRunExtract(Scenario):
         
-        @given("An empty requirements catalogue containing test results")
+        @given("A requirements catalogue containing test results")
         def create(self):
             from corejet.core.model import RequirementsCatalogue
             from corejet.core.model import Epic, Story, Scenario, Step
@@ -243,7 +243,7 @@ class XMLSerialization(unittest.TestCase):
         def cleanUp(self):
             shutil.rmtree(self.tmpdir)
         
-@story(id="CJ-2", title="As a developer, I can parse tests from XML")
+@story(id="CC-2", title="As a developer, I can parse tests from XML")
 class XMLParsing(unittest.TestCase):
     
     @given("A working directory")
