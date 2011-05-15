@@ -77,6 +77,7 @@ class story(object):
                     # case.
 
                     fn = getattr(self, self._testMethodName)
+                    scenario = fn.scenario
                     
                     # Create an instance of the scenario as the 'self'
                     # argument to the function, and set the 'story'
@@ -84,20 +85,19 @@ class story(object):
                     
                     story = self
                     try:
-                        scenario = fn.scenario(story)
+                        scenario = scenario(story)
                     except TypeError:
-                        scenario = fn.scenario()
+                        scenario = scenario()
                         scenario.story = story
                     
                     # Call each of the step methods. Note ``self`` here is
-                    # the *story* class, not the scenario class, which is
-                    # really just a grouping mechanism and not used directly.
+                    # the *scenario* class, not the story class
                     
-                    for func in fn.scenario.givens:
+                    for func in scenario.givens:
                         func(scenario)
-                    for func in fn.scenario.whens:
+                    for func in scenario.whens:
                         func(scenario)
-                    for func in fn.scenario.thens:
+                    for func in scenario.thens:
                         func(scenario)
                 
                 closure.func_name = 'test_%s' % name
