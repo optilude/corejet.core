@@ -1,21 +1,14 @@
 """Decorators. You would normally import these from corejet.core directly.
 """
 
-import types
+import sys
 
 from zope.interface import alsoProvides
 from corejet.core.interfaces import IStep, IScenario, IStory
 
-def iter_step_types(cls):
-    for name, func in cls.__dict__.items():
-        if isinstance(func, types.FunctionType):
-            step_type = getattr(func, 'step_type', None)
-            step = getattr(func, 'text', None)
-            if step_type is not None and step is not None:
-                if step_type in ('given', 'when', 'then',):
-                    yield step_type, func
-                else:
-                    raise ValueError("Unkown step type %s" % step_type)
+def iter_step_type(cls, step_type):
+    for func in getattr(cls, 'corejet.%s' % step_type, []):
+        yield func
 
 class story(object):
     """Defines a reference to a story with an id and title, used as a class
@@ -44,13 +37,12 @@ class story(object):
         global_whens = []
         global_thens = []
         
-        for step_type, func in iter_step_types(cls):
-            if step_type == 'given':
-                global_givens.append(func)
-            elif step_type == 'when':
-                global_whens.append(func)
-            elif step_type == 'then':
-                global_thens.append(func)
+        for func in iter_step_type(cls, 'given'):
+            global_givens.append(func)
+        for func in iter_step_type(cls, 'when'):
+            global_whens.append(func)
+        for func in iter_step_type(cls, 'then'):
+            global_thens.append(func)
         
         for name, scenario in cls.__dict__.items():
             if IScenario.providedBy(scenario):
@@ -132,13 +124,12 @@ class scenario(object):
         cls.status = None
         cls.story = None
         
-        for step_type, func in iter_step_types(cls):
-            if step_type == 'given':
-                cls.givens.append(func)
-            elif step_type == 'when':
-                cls.whens.append(func)
-            elif step_type == 'then':
-                cls.thens.append(func)
+        for func in iter_step_type(cls, 'given'):
+            cls.givens.append(func)
+        for func in iter_step_type(cls, 'when'):
+            cls.whens.append(func)
+        for func in iter_step_type(cls, 'then'):
+            cls.thens.append(func)
         
         alsoProvides(cls, IScenario)
         
@@ -152,6 +143,10 @@ class _step(object):
         self.step = step
     
     def __call__(self, method):
+        
+        frame = sys._getframe(1)
+        frame.f_locals.setdefault('corejet.' + self.step_type, []).append(method)
+        
         method.step_type = self.step_type
         method.text = self.step
         
