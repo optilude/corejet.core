@@ -68,7 +68,7 @@ def appendScenarios(story, text):
             
             if previousStep == "given":
                 scenario.givens.append(Step(andMatch.group(1), previousStep))
-            elif previousStep == "given":
+            elif previousStep == "when":
                 scenario.whens.append(Step(andMatch.group(1), previousStep))
             elif previousStep == "then":
                 scenario.thens.append(Step(andMatch.group(1), previousStep))
