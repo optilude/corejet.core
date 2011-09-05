@@ -17,7 +17,7 @@ def appendScenarios(story, text):
     scenario = None
     previousStep = None
     
-    for line in text.splitlines():
+    for line in re.sub('"', "'", text).splitlines():
         
         scenarioMatch = scenario_regex.match(line)
         if scenarioMatch:
