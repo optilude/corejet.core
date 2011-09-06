@@ -155,6 +155,11 @@ class Epic(object):
         self.title = title
         self.stories = stories or []
 
+    def __setattr__(self, name, value):
+        if type(value) in (str, unicode):
+            value = value.replace('"', "'")
+        return super(Epic, self).__setattr__(name, value)
+
 class Story(object):
     implements(IStory)
     
@@ -174,6 +179,11 @@ class Story(object):
         self.priority = priority
         self.epic = epic
 
+    def __setattr__(self, name, value):
+        if type(value) in (str, unicode):
+            value = value.replace('"', "'")
+        return super(Story, self).__setattr__(name, value)
+
 class Scenario(object):
     implements(IScenario)
     
@@ -191,9 +201,19 @@ class Scenario(object):
         self.status = status
         self.story = story
 
+    def __setattr__(self, name, value):
+        if type(value) in (str, unicode):
+            value = value.replace('"', "'")
+        return super(Scenario, self).__setattr__(name, value)
+
 class Step(object):
     implements(IStep)
     
     def __init__(self, text, step_type):
         self.text = text
         self.step_type = step_type
+
+    def __setattr__(self, name, value):
+        if type(value) in (str, unicode):
+            value = value.replace('"', "'")
+        return super(Step, self).__setattr__(name, value)
