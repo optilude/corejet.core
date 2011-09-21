@@ -1,7 +1,9 @@
 """Decorators. You would normally import these from corejet.core directly.
 """
 
+import re
 import sys
+import string
 
 from zope.interface import alsoProvides
 from corejet.core.interfaces import IStep, IScenario, IStory
@@ -9,6 +11,15 @@ from corejet.core.interfaces import IStep, IScenario, IStory
 def iter_step_type(cls, step_type):
     for func in getattr(cls, 'corejet.%s' % step_type, []):
         yield func
+
+def normalize(s):
+    whitelist = (' 1234567890'
+                 'abcdefghijklmnopqrstuvwxyz'
+                 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    w_clear = string.maketrans(whitelist, re.sub('.', '_', whitelist))
+    blacklist = s.replace('_', ' ').translate(w_clear).replace('_', '')
+    b_clear = string.maketrans(blacklist, re.sub('.', '_', blacklist))
+    return s.translate(b_clear).replace('_', '').replace(' ', '_')
 
 class story(object):
     """Defines a reference to a story with an id and title, used as a class
@@ -23,6 +34,7 @@ class story(object):
     def __call__(self, cls):
         cls.name = self.id
         cls.title = self.title
+        cls.__name__ = normalize(self.title.encode('utf-8'))
         cls.scenarios = []
         
         cls.points = None
@@ -92,12 +104,14 @@ class story(object):
                     for func in scenario.thens:
                         func(scenario)
                 
-                closure.func_name = 'test_%s' % name
+                closure.func_name = 'test_%s' %\
+                    normalize(scenario.name.encode('utf-8'))
                 closure.__module__ = cls.__module__
                 
                 closure.scenario = scenario
                 
-                setattr(cls, 'test_%s' % name, closure)
+                setattr(cls, 'test_%s' %\
+                    normalize(scenario.name.encode('utf-8')), closure)
                 
                 cls.scenarios.append(scenario)
         
