@@ -1,49 +1,64 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" omit-xml-declaration="yes"/>
+<xsl:variable name="s" select="translate(number(boolean(count(//story) - 1)), '01', '1')"/>
+<xsl:variable name="c" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+<xsl:template name="story-number">
+  <xsl:value-of select="translate(position() * 0.5, $s, '')"/>
+</xsl:template>
+<xsl:template name="scenario-letter">
+  <xsl:value-of select="translate(number(boolean(count(parent::node()/scenario) - 1)), '10', substring($c, position(), 1))"/>
+</xsl:template>
+<xsl:template name="given-letter">
+  <xsl:value-of select="translate(number(boolean(count(parent::node()/given) - 1)), '10', substring($c, position(), 1))"/>
+</xsl:template>
+<xsl:template name="when-letter">
+  <xsl:value-of select="translate(number(boolean(count(parent::node()/when) - 1)), '10', substring($c, position(), 1))"/>
+</xsl:template>
+<xsl:template name="then-letter">
+  <xsl:value-of select="translate(number(boolean(count(parent::node()/then) - 1)), '10', substring($c, position(), 1))"/>
+</xsl:template>
 <xsl:template match="//story">
-<xsl:variable name="w" select="' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 # -*- coding: utf-8 -*-
 import unittest2 as unittest
 from corejet.core import Scenario, story, scenario, given, when, then
 
 
 @story(id="<xsl:value-of select="@id"/>", title=u"<xsl:value-of select="@title"/>")
-class <xsl:value-of select="translate(@title, concat(' ', translate(@title, $w, '')), '_')"/>(unittest.TestCase):
+class Story<xsl:call-template name="story-number"/>(unittest.TestCase):
 <xsl:for-each select="given">
     @given(u"<xsl:value-of select="text()"/>")
-    def <xsl:value-of select="translate(text(), concat(' ', translate(text(), $w, '')), '_')"/>(self):
+    def given<xsl:call-template name="given-letter"/>(self):
         pass
 </xsl:for-each>
 <xsl:for-each select="when">
     @when(u"<xsl:value-of select="text()"/>")
-    def <xsl:value-of select="translate(text(), concat(' ', translate(text(), $w, '')), '_')"/>(self):
+    def when<xsl:call-template name="when-letter"/>(self):
         pass
 </xsl:for-each>
 <xsl:for-each select="then">
     @then(u"<xsl:value-of select="text()"/>")
-    def <xsl:value-of select="translate(text(), concat(' ', translate(text(), $w, '')), '_')"/>(self):
+    def then<xsl:call-template name="then-letter"/>(self):
         self.assertTrue(False, u"This test needs to be finished.")
 </xsl:for-each>
 <xsl:apply-templates select="scenario"/>
 </xsl:template>
 <xsl:template match="scenario">
-<xsl:variable name="w" select="' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
     @scenario(u"<xsl:value-of select="@name"/>")
-    class <xsl:value-of select="translate(@name, concat(' ', translate(@name, $w, '')), '_')"/>(Scenario):
+    class Scenario<xsl:call-template name="scenario-letter"/>(Scenario):
 <xsl:for-each select="given">
         @given(u"<xsl:value-of select="text()"/>")
-        def <xsl:value-of select="translate(text(), concat(' ', translate(text(), $w, '')), '_')"/>(self):
+        def given<xsl:call-template name="given-letter"/>(self):
             pass
 </xsl:for-each>
 <xsl:for-each select="when">
         @when(u"<xsl:value-of select="text()"/>")
-        def <xsl:value-of select="translate(text(), concat(' ', translate(text(), $w, '')), '_')"/>(self):
+        def when<xsl:call-template name="when-letter"/>(self):
             pass
 </xsl:for-each>
 <xsl:for-each select="then">
         @then(u"<xsl:value-of select="text()"/>")
-        def <xsl:value-of select="translate(text(), concat(' ', translate(text(), $w, '')), '_')"/>(self):
+        def then<xsl:call-template name="then-letter"/>(self):
             self.assertTrue(False, u"This test needs to be finished.")
 </xsl:for-each>
 </xsl:template>
