@@ -8,6 +8,7 @@ given_regex = re.compile(r'^\s*Given (.+)', re.I)
 when_regex = re.compile(r'^\s*When (.+)', re.I)
 then_regex = re.compile(r'^\s*Then (.+)', re.I)
 and_regex = re.compile(r'^\s*And (.+)', re.I)
+but_regex = re.compile(r'^\s*But (.+)', re.I)
 
 def setBackground(story, text):
     """Parse the acceptance criteria in the string 'text' and set the
@@ -42,7 +43,7 @@ def setBackground(story, text):
             backgroundGivens.append(Step(givenMatch.group(1), previousStep))
             continue
 
-        andMatch = and_regex.match(line)
+        andMatch = and_regex.match(line) or but_regex.match(line)
         if andMatch:
             if backgroundGivens is None:
                 raise ValueError("Found %s outside a background" % line)
@@ -116,7 +117,7 @@ def appendScenarios(story, text):
             scenario.thens.append(Step(thenMatch.group(1), previousStep))
             continue
         
-        andMatch = and_regex.match(line)
+        andMatch = and_regex.match(line) or but_regex.match(line)
         if andMatch:
             if scenario is None:
                 raise ValueError("Found %s outside a scenario" % line)
