@@ -191,12 +191,21 @@ Scenarios can be written in plain text like so::
     When Entering the username 'joebloggs' and password 'uhoh'
     Then An error is shown
     
-    Scenario: Cancel buttton
+    Scenario: Cancel button
     Given A user 'joebloggs' with password 'secret'
     When Entering the username 'joebloggs' and password 'uhoh'
      And Clicking the 'cancel' button
     Then The user is taken away from the page
      And A warning is shown
+
+Scenarios may be preceded by a background description composed of one or more
+"Given" clauses affecting every scenario::
+
+    Background:
+    Given I'm logged in
+     And I've got superuser privileges
+
+    Scenario: ...
 
 The full Gherkin syntax is more involved, but to parse this simplified style
 of scenarios and append them to a story, you can use the function
