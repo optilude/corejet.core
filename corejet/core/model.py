@@ -71,6 +71,15 @@ class RequirementsCatalogue(object):
                 story = Story(name, title, points=points, status=status,
                     resolution=resolution, priority=priority, epic=epic)
                 epic.stories.append(story)
+
+                for givenElement in storyElement.iterchildren(tag="given"):
+                    story.givens.append(Step(givenElement.text, 'given'))
+
+                for givenElement in storyElement.iterchildren(tag="when"):
+                    story.givens.append(Step(givenElement.text, 'when'))
+
+                for givenElement in storyElement.iterchildren(tag="then"):
+                    story.givens.append(Step(givenElement.text, 'then'))
                 
                 for scenarioElement in storyElement.iterchildren(tag="scenario"):
                     
@@ -121,6 +130,18 @@ class RequirementsCatalogue(object):
                 if story.priority:
                     storyElement.set("priority", story.priority)
                 
+                for given in story.givens:
+                    givenElement = etree.SubElement(storyElement, "given")
+                    givenElement.text = given.text
+
+                for when in story.whens:
+                    givenElement = etree.SubElement(storyElement, "when")
+                    givenElement.text = given.text
+                    
+                for then in story.thens:
+                    givenElement = etree.SubElement(storyElement, "then")
+                    givenElement.text = given.text
+
                 for scenario in story.scenarios:
                     
                     scenarioElement = etree.SubElement(storyElement, "scenario")
@@ -163,7 +184,11 @@ class Epic(object):
 class Story(object):
     implements(IStory)
     
-    def __init__(self, name, title, scenarios=None,
+    def __init__(self, name, title,
+        givens=None,
+        whens=None,
+        thens=None,
+        scenarios=None,
         points=None,
         status=None,
         resolution=None,
@@ -172,6 +197,9 @@ class Story(object):
     ):
         self.name = name
         self.title = title
+        self.givens = givens or []
+        self.whens = whens or []
+        self.thens = thens or []
         self.scenarios = scenarios or []
         self.points = points
         self.status = status

@@ -29,6 +29,11 @@ class IStory(Interface):
     name = schema.TextLine(title=u"Story name")
     
     title = schema.TextLine(title=u"Story title")
+    
+    givens = schema.List(title=u"Given clauses", value_type=schema.Object(schema=IStep))
+    whens = schema.List(title=u"Given clauses", value_type=schema.Object(schema=IStep))
+    thens = schema.List(title=u"Given clauses", value_type=schema.Object(schema=IStep))
+    
     scenarios = schema.List(title=u"Scenarios", value_type=schema.Object(schema=IScenario))
     
     points = schema.Int(title=u"Story points", required=False)
