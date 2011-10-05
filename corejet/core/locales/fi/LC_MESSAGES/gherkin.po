@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-10-05 09:29+0000\\n"
-"PO-Revision-Date: 2011-10-05 07:14+0300\n"
+"POT-Creation-Date: 2011-10-05 16:37+0000\\n"
+"PO-Revision-Date: 2011-10-05 19:37+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -40,7 +40,7 @@ msgstr "Kun"
 
 #: corejet/core/parser.py:44
 msgid "^\\s*{keyword} (.+)"
-msgstr "^\\s*{keyword}[,]? (.+)[\\.,]|^\\s*{keyword}[,]? (.+)"
+msgstr "^\\s*{keyword}[,]? (?:että )?(.+?)[\\.,]?$"
 
 #: corejet/core/parser.py:43
 msgid "^\\s*{keyword}(?: \\d+)?: (.+)"
