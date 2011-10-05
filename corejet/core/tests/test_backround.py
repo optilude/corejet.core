@@ -6,7 +6,7 @@ import unittest2 as unittest
 import lxml.etree
 
 from corejet.core import Scenario, story, scenario, given, when, then
-from corejet.core.parser import setBackground, appendScenarios
+from corejet.core.parser import appendScenarios
 
 
 @story(id="bg-1",
@@ -362,7 +362,6 @@ When something happens
 Then do something
   And something else
 """
-            setBackground(story1, text)
             appendScenarios(story1, text)
 
         @when(u"The serialize() method is called")
@@ -436,7 +435,6 @@ When something happens
 Then do something
   And something else
 """
-            setBackground(story1, text)
             appendScenarios(story1, text)
 
         @when(u"The serialize() method is called")
