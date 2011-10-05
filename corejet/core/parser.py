@@ -28,8 +28,8 @@ class RegEx(object):
         if language not in self.translations:
             language = 'en'
         if language not in self._expressions:
-            keyword = self.translations[language].gettext(self._keyword)
-            pattern = self.translations[language].gettext(self._pattern)
+            keyword = self.translations[language].ugettext(self._keyword)
+            pattern = self.translations[language].ugettext(self._pattern)
             try:
                 self._expressions[language] =\
                     re.compile(pattern.format(keyword=keyword), re.I)
