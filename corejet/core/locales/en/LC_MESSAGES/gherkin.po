@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-10-05 09:29+0000\\n"
+"POT-Creation-Date: 2011-10-06 07:23+0000\\n"
 "PO-Revision-Date: 2011-10-04 14:10+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,15 +14,19 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
-#: corejet/core/parser.py:47
+#: corejet/core/parser.py:50
 msgid "And"
 msgstr ""
 
-#: corejet/core/parser.py:48
+#: corejet/core/parser.py:51
 msgid "But"
 msgstr ""
 
-#: corejet/core/parser.py:44
+#: corejet/core/parser.py:45
+msgid "Examples"
+msgstr ""
+
+#: corejet/core/parser.py:47
 msgid "Given"
 msgstr ""
 
@@ -30,19 +34,27 @@ msgstr ""
 msgid "Scenario"
 msgstr ""
 
-#: corejet/core/parser.py:46
+#: corejet/core/parser.py:44
+msgid "Scenario Outline"
+msgstr ""
+
+#: corejet/core/parser.py:49
 msgid "Then"
 msgstr ""
 
-#: corejet/core/parser.py:45
+#: corejet/core/parser.py:48
 msgid "When"
 msgstr ""
 
-#: corejet/core/parser.py:44
+#: corejet/core/parser.py:47
 msgid "^\\s*{keyword} (.+)"
 msgstr ""
 
 #: corejet/core/parser.py:43
 msgid "^\\s*{keyword}(?: \\d+)?: (.+)"
+msgstr ""
+
+#: corejet/core/parser.py:45
+msgid "^\\s*{keyword}(?: \\d+)?:\\s*"
 msgstr ""
 
