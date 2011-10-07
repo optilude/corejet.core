@@ -1,9 +1,9 @@
 """Decorators. You would normally import these from corejet.core directly.
 """
 
-import re
 import sys
 import string
+import unicodedata
 
 from zope.interface import alsoProvides
 from corejet.core.interfaces import IStep, IScenario, IStory
@@ -13,13 +13,24 @@ def iter_step_type(cls, step_type):
         yield func
 
 def normalize(s):
-    whitelist = (' 1234567890'
-                 'abcdefghijklmnopqrstuvwxyz'
-                 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-    w_clear = string.maketrans(whitelist, re.sub('.', '_', whitelist))
-    blacklist = s.replace('_', ' ').translate(w_clear).replace('_', '')
-    b_clear = string.maketrans(blacklist, re.sub('.', '_', blacklist))
-    return s.translate(b_clear).replace('_', '').replace(' ', '_')
+    whitelist = (' ' + string.ascii_letters + string.digits)
+
+    if type(s) == str:
+        s = unicode(s, 'utf-8')
+
+    table = {}
+    for ch in [ch for ch in s if ch not in whitelist]:
+        if ch not in table:
+            try:
+                replacement = unicodedata.normalize('NFKD', ch)[0]
+                if replacement in whitelist:
+                    table[ord(ch)] = replacement
+                else:
+                    table[ord(ch)] = u'_'
+            except:
+                table[ord(ch)] = u'_'
+    print s.translate(table).replace(u'_', u'').replace(u' ', u'_')
+    return s.translate(table).replace(u'_', u'').replace(u' ', u'_')
 
 class story(object):
     """Defines a reference to a story with an id and title, used as a class
@@ -34,7 +45,7 @@ class story(object):
     def __call__(self, cls):
         cls.name = self.id
         cls.title = self.title
-        cls.__name__ = normalize(self.title.encode('utf-8'))
+        cls.__name__ = str(normalize(self.title))
         cls.scenarios = []
         
         cls.points = None
@@ -105,13 +116,13 @@ class story(object):
                         func(scenario)
                 
                 closure.func_name = 'test_%s' %\
-                    normalize(scenario.name.encode('utf-8'))
+                    str(normalize(scenario.name))
                 closure.__module__ = cls.__module__
                 
                 closure.scenario = scenario
                 
                 setattr(cls, 'test_%s' %\
-                    normalize(scenario.name.encode('utf-8')), closure)
+                    str(normalize(scenario.name)), closure)
                 
                 cls.scenarios.append(scenario)
         
