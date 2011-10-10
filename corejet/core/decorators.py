@@ -29,7 +29,6 @@ def normalize(s):
                     table[ord(ch)] = u'_'
             except:
                 table[ord(ch)] = u'_'
-    print s.translate(table).replace(u'_', u'').replace(u' ', u'_')
     return s.translate(table).replace(u'_', u'').replace(u' ', u'_')
 
 class story(object):
