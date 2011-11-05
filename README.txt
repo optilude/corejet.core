@@ -221,8 +221,8 @@ The parser is relatively forgiving, but note:
  * The "Given" clause is optional, but must come first in a scenario
  * The "When" clause is required, and must come before the "Then" clause
  * The "Then"" clause is also required
- * An "And" clause can come after any "Given", "When" or "Then", but not
-   first.
+ * An "And" or "But" clause can come after any "Given", "When" or "Then", but
+   not first.
 
 .. _corejet.recipe.testrunner: http://pypi.python.org/pypi/corejet.recipe.testrunner
 .. _corejet.testrunner: http://pypi.python.org/pypi/corejet.testrunner
