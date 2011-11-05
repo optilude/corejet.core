@@ -1,6 +1,24 @@
 Changelog
 =========
 
+- Added Finnish language support
+  [datakurre]
+- Added parser support for Cucumber-like 'language' keyword
+  [datakurre]
+- Added parser support for 'Scenario Outline' and 'Examples'
+  [datakurre]
+- Added new step keyword *but* as on alias to *and*
+  [datakurre]
+- Modified decorators to name test modules and methods by normalizing
+  respective titles
+  [datakurre]
+- Finished support for story-level steps
+  [datakurre]
+- Ensure quotes (") are converted into apostrophes (')
+  [datakurre]
+- Fixed corejet-to-python.xsl to produce runnable test skeletons
+  [datakurre]
+
 1.0a4
 -----
 

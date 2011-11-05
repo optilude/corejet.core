@@ -69,42 +69,42 @@ Here is an example::
 
     import unittest2 as unittest
     from corejet.core import Scenario, story, scenario, given, when, then
-    
+
     @story(id="S1", title="As a user, I can log in")
     class Login(unittest.TestCase):
-        
+
         @scenario("Invalid username")
         class InvalidUsername(Scenario):
-    
+
             @given("A user 'joebloggs' with password 'secret'")
             def setupUser(self):
                 # Some precondition logic, e.g.
                 createUser('jobloggs', 'secret')
-    
+
             @when("Entering the username 'jobloggs' and password 'secret'")
             def attemptLogin(self):
                 # Call some action logic, e.g.
                 loginAs('jobloggs', 'secret')
-    
+
             @then("An error is shown")
             def checkOutput(self):
                 # Perform some assertion, e.g.
                 errorMessages = getErrorMessages()
                 self.assertTrue("Invalid username" in errorMessages)
-        
+
         @scenario("Invalid password")
         class InvalidPassword(Scenario):
-    
+
             @given("A user 'joebloggs' with password 'secret'")
             def setupUser(self):
                 # Some precondition logic, e.g.
                 createUser('jobloggs', 'secret')
-    
+
             @when("Entering the username 'joebloggs' and password 'uhoh'")
             def attemptLogin(self):
                 # Call some action logic, e.g.
                 loginAs('joebloggs', 'uhph')
-    
+
             @then("An error is shown")
             def checkOutput(self):
                 # Perform some assertion, e.g.
@@ -137,7 +137,7 @@ Data model
 ==========
 
 The standard CoreJet data model is represented in this package in the
-module ``corejet.core.model``, and described by the interfaces in 
+module ``corejet.core.model``, and described by the interfaces in
 ``corejet.core.interfaces``. There main class is the
 ``RequirementsCatalogue``, which contains a list of ``Epic`` object, which in
 turn contain a list of ``Story`` objects, which in turn contain a list of
@@ -185,12 +185,12 @@ Scenarios can be written in plain text like so::
     Given A user 'joebloggs' with password 'secret'
     When Entering the username 'jobloggs' and password 'secret'
     Then An error is shown
-    
+
     Scenario: Invalid password
     Given A user 'joebloggs' with password 'secret'
     When Entering the username 'joebloggs' and password 'uhoh'
     Then An error is shown
-    
+
     Scenario: Cancel button
     Given A user 'joebloggs' with password 'secret'
     When Entering the username 'joebloggs' and password 'uhoh'
@@ -201,11 +201,12 @@ Scenarios can be written in plain text like so::
 Scenarios may be preceded by a background description composed of one or more
 "Given" clauses affecting every scenario::
 
-    Background:
     Given I'm logged in
      And I've got superuser privileges
 
     Scenario: ...
+
+In addition, there is basic support for "Scenario Outline" with "Examples".
 
 The full Gherkin syntax is more involved, but to parse this simplified style
 of scenarios and append them to a story, you can use the function
@@ -223,6 +224,7 @@ The parser is relatively forgiving, but note:
  * An "And" clause can come after any "Given", "When" or "Then", but not
    first.
 
+.. _corejet.recipe.testrunner: http://pypi.python.org/pypi/corejet.recipe.testrunner
 .. _corejet.testrunner: http://pypi.python.org/pypi/corejet.testrunner
 .. _corejet.jira: http://pypi.python.org/pypi/corejet.jira
 .. _corejet.visualization: http://pypi.python.org/pypi/corejet.visualization
