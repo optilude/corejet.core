@@ -13,10 +13,12 @@ def iter_step_type(cls, step_type):
         yield func
 
 def normalize(s):
+    """Normalizes non-ascii characters to their closest ascii counterparts
+    and replaces spaces with underscores"""
     whitelist = (' ' + string.ascii_letters + string.digits)
 
     if type(s) == str:
-        s = unicode(s, 'utf-8')
+        s = unicode(s, 'utf-8', 'ignore')
 
     table = {}
     for ch in [ch for ch in s if ch not in whitelist]:
