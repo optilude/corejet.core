@@ -2,7 +2,11 @@ Changelog
 =========
 
 
+1.0.1 (2012-05-27)
+------------------
+
 - Added helper script for generating test skeletons from test reports.
+  Added 'argparse' into requirements.
   [datakurre]
 
 

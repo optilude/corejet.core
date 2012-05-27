@@ -227,16 +227,16 @@ The parser is relatively forgiving, but note:
 Generating test skeletons
 =========================
 
-``corejet.core`` is shipped with an XSLT stylesheet for generating empty
-test skeletons for Python unittest. A helper script for executing the
-XSLT-transformation can be installed using buildout with part::
+``corejet.core`` ships with an XSLT stylesheet for generating test skeletons
+for Python unittest. If you are using buildout, you can install a helper
+script for executing the XSLT-transformation with::
 
     [corejet2py]
     recipe = zc.recipe.rgg
     eggs = corejet.core
     scripts = corejet2py
 
-And executed with::
+And execute it with::
 
     bin/corejet2py path/to/corejet.xml
 
