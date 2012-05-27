@@ -5,6 +5,7 @@ version = '1.0.0'
 requires = [
     'setuptools',
     'lxml',
+    'argparse',
     'python-dateutil < 2.0dev',
     'unittest2',
     'zope.interface',
@@ -30,5 +31,7 @@ setup(name='corejet.core',
       zip_safe=False,
       install_requires=requires,
       entry_points="""
+      [console_scripts]
+      corejet2py = corejet.core.scripts.corejet2py:main
       """,
       )

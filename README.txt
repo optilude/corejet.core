@@ -224,6 +224,24 @@ The parser is relatively forgiving, but note:
  * An "And" or "But" clause can come after any "Given", "When" or "Then", but
    not first.
 
+Generating test skeletons
+=========================
+
+``corejet.core`` is shipped with an XSLT stylesheet for generating empty
+test skeletons for Python unittest. A helper script for executing the
+XSLT-transformation can be installed using buildout with part::
+
+    [corejet2py]
+    recipe = zc.recipe.rgg
+    eggs = corejet.core
+    scripts = corejet2py
+
+And executed with::
+
+    bin/corejet2py path/to/corejet.xml
+
+Try ``bin/corejet2py --help`` for more information.
+
 .. _corejet.recipe.testrunner: http://pypi.python.org/pypi/corejet.recipe.testrunner
 .. _corejet.testrunner: http://pypi.python.org/pypi/corejet.testrunner
 .. _corejet.jira: http://pypi.python.org/pypi/corejet.jira

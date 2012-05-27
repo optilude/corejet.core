@@ -2,6 +2,10 @@ Changelog
 =========
 
 
+- Added helper script for generating test skeletons from test reports.
+  [datakurre]
+
+
 1.0.0
 -----
 
