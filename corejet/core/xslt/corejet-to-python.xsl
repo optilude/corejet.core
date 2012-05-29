@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" omit-xml-declaration="yes"/>
+<xsl:strip-space elements="*"/>
 <xsl:variable name="s" select="translate(number(boolean(count(//story) - 1)), '01', '1')"/>
 <xsl:variable name="c" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 <xsl:template name="story-number">
-  <xsl:value-of select="translate(position() * 0.5, $s, '')"/>
+  <xsl:value-of select="translate(position(), $s, '')"/>
 </xsl:template>
 <xsl:template name="scenario-letter">
   <xsl:value-of select="translate(number(boolean(count(parent::node()/scenario) - 1)), '10', substring($c, position(), 1))"/>
