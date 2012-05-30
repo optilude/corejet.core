@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+1.0.2 (2012-05-30)
+------------------
+
+- Fixed test skeleton generation XSLT to strip extra whitespaces.
+  [datakurre]
+
+
 1.0.1 (2012-05-27)
 ------------------
 
