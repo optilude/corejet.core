@@ -20,11 +20,16 @@
   <xsl:value-of select="translate(number(boolean(count(parent::node()/then) - 1)), '10', substring($c, position(), 1))"/>
 </xsl:template>
 <xsl:template match="//story">
+<xsl:if test="position() &lt; 2">
 # -*- coding: utf-8 -*-
 import unittest2 as unittest
 from corejet.core import Scenario, story, scenario, given, when, then
 
-
+</xsl:if>
+<xsl:if test="position() &gt; 1">
+<xsl:text>
+</xsl:text>
+</xsl:if>
 @story(id="<xsl:value-of select="@id"/>", title=u"<xsl:value-of select="@title"/>")
 class Story<xsl:call-template name="story-number"/>(unittest.TestCase):
 <xsl:for-each select="given">
