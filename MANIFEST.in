@@ -1,0 +1,3 @@
+graft corejet
+include *.txt
+global-exclude *.pyc
