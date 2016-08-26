@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+1.1.0 (unreleased)
+------------------
+
+- Fix to run with python-dateutil >= 2.0devw
+  [datakurre]
+
+
 1.0.2 (2012-05-30)
 ------------------
 
