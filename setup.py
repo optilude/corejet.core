@@ -6,7 +6,7 @@ requires = [
     'setuptools',
     'lxml',
     'argparse',
-    'python-dateutil < 2.0dev',
+    'python-dateutil',
     'unittest2',
     'zope.interface',
     'zope.schema',
