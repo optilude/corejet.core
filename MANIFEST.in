@@ -1,3 +1,4 @@
 graft corejet
 include *.txt
 global-exclude *.pyc
+exclude i18n.sh
